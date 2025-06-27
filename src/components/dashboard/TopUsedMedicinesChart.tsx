@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -19,7 +19,17 @@ interface TopMedicine {
 }
 
 const TopUsedMedicinesChart: React.FC<{ data: TopMedicine[] }> = ({ data }) => {
-  const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const match = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDarkMode(match.matches);
+
+    const handleChange = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
+    match.addEventListener("change", handleChange);
+
+    return () => match.removeEventListener("change", handleChange);
+  }, []);
 
   const labels = data.map((item) => item.name);
   const usageData = data.map((item) => item.totalUsed);
@@ -42,13 +52,13 @@ const TopUsedMedicinesChart: React.FC<{ data: TopMedicine[] }> = ({ data }) => {
         data: usageData,
         backgroundColor: backgroundColors,
         borderRadius: 6,
-        maxBarThickness: 30,
+        maxBarThickness: 28,
       },
     ],
   };
 
-  const tickColor = isDarkMode ? "#E5E7EB" : "#374151"; // gray-200 vs gray-800
-  const gridColor = isDarkMode ? "#4B5563" : "#D1D5DB";  // gray-600 vs gray-300
+  const tickColor = isDarkMode ? "#E5E7EB" : "#374151";
+  const gridColor = isDarkMode ? "#4B5563" : "#D1D5DB";
 
   const chartOptions = {
     indexAxis: "y" as const,
@@ -72,12 +82,10 @@ const TopUsedMedicinesChart: React.FC<{ data: TopMedicine[] }> = ({ data }) => {
       x: {
         beginAtZero: true,
         ticks: {
-          stepSize: 1,
           color: tickColor,
           font: { size: 12 },
         },
         grid: {
-          drawOnChartArea: true,
           color: gridColor,
         },
       },
@@ -87,7 +95,7 @@ const TopUsedMedicinesChart: React.FC<{ data: TopMedicine[] }> = ({ data }) => {
           font: { size: 12 },
           callback: function (label: string | number) {
             const str = label.toString();
-            return str.length > 20 ? str.slice(0, 20) + "…" : str;
+            return str.length > 25 ? str.slice(0, 25) + "…" : str;
           },
         },
         grid: {
@@ -98,11 +106,11 @@ const TopUsedMedicinesChart: React.FC<{ data: TopMedicine[] }> = ({ data }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 overflow-x-auto">
-      <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100 whitespace-nowrap">
+    <div className="bg-white dark:bg-[#181818] rounded-xl shadow p-4">
+      <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">
         Top 5 Médicaments les Plus Utilisés
       </h3>
-      <div className="min-w-[300px] md:min-w-full h-[300px] md:h-[400px]">
+      <div className="h-[300px] sm:h-[400px] w-full overflow-x-auto">
         <Bar data={chartData} options={chartOptions} />
       </div>
     </div>
