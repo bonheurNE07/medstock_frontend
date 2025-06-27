@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { createMedicineReceipt } from '../../services/medicineReceiptService';
-import { fetchCenters, fetchMedicines } from '../../services/stockService';
-import { Center, Medicine } from '../../types';
+import React, { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
+import { createMedicineReceipt } from "@/services/medicineReceiptService";
+import { fetchCenters, fetchMedicines } from "@/services/stockService";
+import { Center, Medicine } from "../../types";
 
 interface FormData {
   center: string;
@@ -18,7 +19,7 @@ const MedicineReceiptForm: React.FC = () => {
   const [centers, setCenters] = useState<Center[]>([]);
   const [medicines, setMedicines] = useState<Medicine[]>([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const {
     register,
@@ -34,7 +35,6 @@ const MedicineReceiptForm: React.FC = () => {
     },
   });
 
-
   useEffect(() => {
     fetchCenters().then(setCenters);
     fetchMedicines().then(setMedicines);
@@ -42,20 +42,20 @@ const MedicineReceiptForm: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
-    setMessage('');
+    setMessage("");
     try {
       await createMedicineReceipt({
         center: parseInt(data.center),
         medicine: parseInt(data.medicine),
         quantity_received: parseInt(data.quantity_received),
-        exp_date: data.exp_date.toISOString().split('T')[0],
-        received_date: data.received_date.toISOString().split('T')[0],
+        exp_date: data.exp_date.toISOString().split("T")[0],
+        received_date: data.received_date.toISOString().split("T")[0],
       });
-      setMessage('✅ Entrée enregistrée avec succès.');
-      resetField('quantity_received');
-      resetField('exp_date');
+      setMessage("✅ Entrée enregistrée avec succès.");
+      resetField("quantity_received");
+      resetField("exp_date");
     } catch (error) {
-      setMessage('❌ Erreur lors de l’enregistrement.');
+      setMessage("❌ Erreur lors de l’enregistrement.");
     } finally {
       setLoading(false);
     }
@@ -64,16 +64,20 @@ const MedicineReceiptForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-4 sm:p-6 md:p-8 space-y-6"
+      className="w-full bg-white dark:bg-[#181818] rounded-xl shadow p-4 sm:p-6 space-y-6"
     >
-      <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Ajouter une entrée de stock</h2>
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+        ➕ Ajouter une entrée de stock
+      </h2>
 
-      {/* Center Select */}
+      {/* Center select */}
       <div>
-        <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Centre médical</label>
+        <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+          Centre médical
+        </label>
         <select
-          {...register('center', { required: 'Centre requis' })}
-          className="w-full border dark:border-gray-600 p-2 rounded text-sm dark:bg-gray-700 dark:text-gray-200"
+          {...register("center", { required: "Centre requis" })}
+          className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
         >
           <option value="">-- Choisir un centre --</option>
           {centers.map((center) => (
@@ -82,15 +86,19 @@ const MedicineReceiptForm: React.FC = () => {
             </option>
           ))}
         </select>
-        {errors.center && <p className="text-red-600 text-sm">{errors.center.message}</p>}
+        {errors.center && (
+          <p className="text-sm text-red-600 mt-1">{errors.center.message}</p>
+        )}
       </div>
 
-      {/* Medicine Select */}
+      {/* Medicine select */}
       <div>
-        <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Médicament</label>
+        <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+          Médicament
+        </label>
         <select
-          {...register('medicine', { required: 'Médicament requis' })}
-          className="w-full border dark:border-gray-600 p-2 rounded text-sm dark:bg-gray-700 dark:text-gray-200"
+          {...register("medicine", { required: "Médicament requis" })}
+          className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
         >
           <option value="">-- Choisir un médicament --</option>
           {medicines.map((med) => (
@@ -99,85 +107,85 @@ const MedicineReceiptForm: React.FC = () => {
             </option>
           ))}
         </select>
-        {errors.medicine && <p className="text-red-600 text-sm">{errors.medicine.message}</p>}
-      </div>
-
-      {/* Quantity */}
-      <div>
-        <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Quantité reçue</label>
-        <input
-          type="number"
-          min={1}
-          {...register('quantity_received', {
-            required: 'Quantité requise',
-            min: { value: 1, message: 'Quantité minimale: 1' },
-          })}
-          className="w-full border dark:border-gray-600 p-2 rounded text-sm dark:bg-gray-700 dark:text-gray-200"
-        />
-        {errors.quantity_received && (
-          <p className="text-red-600 text-sm">{errors.quantity_received.message}</p>
+        {errors.medicine && (
+          <p className="text-sm text-red-600 mt-1">{errors.medicine.message}</p>
         )}
       </div>
 
-      {/* Date */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:gap-6">
-          {/* Date de réception */}
-          <div className="flex flex-col lg:flex-1">
-            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-              Date de réception
-            </label>
-            <Controller
-              name="received_date"
-              control={control}
-              rules={{ required: 'Date requise' }}
-              defaultValue={new Date()}
-              render={({ field }) => (
-                <DatePicker
-                  selected={field.value}
-                  onChange={field.onChange}
-                  dateFormat="dd/MM/yyyy"
-                  className="w-full border dark:border-gray-600 p-2 rounded text-sm dark:bg-gray-700 dark:text-gray-200"
-                  placeholderText="jj/mm/aaaa"
-                />
-              )}
-            />
-            {errors.received_date && (
-              <p className="text-red-600 text-sm">{errors.received_date.message}</p>
-            )}
-          </div>
+      {/* Quantity input */}
+      <div>
+        <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+          Quantité reçue
+        </label>
+        <input
+          type="number"
+          min={1}
+          {...register("quantity_received", {
+            required: "Quantité requise",
+            min: { value: 1, message: "Quantité minimale : 1" },
+          })}
+          className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+        />
+        {errors.quantity_received && (
+          <p className="text-sm text-red-600 mt-1">
+            {errors.quantity_received.message}
+          </p>
+        )}
+      </div>
 
-          {/* Date d'expiration */}
-          <div className="flex flex-col lg:flex-1">
-            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
-              Date d'expiration
-            </label>
-            <Controller
-              name="exp_date"
-              control={control}
-              rules={{ required: 'Date requise' }}
-              defaultValue={new Date()}
-              render={({ field }) => (
-                <DatePicker
-                  selected={field.value}
-                  onChange={field.onChange}
-                  dateFormat="dd/MM/yyyy"
-                  className="w-full border dark:border-gray-600 p-2 rounded text-sm dark:bg-gray-700 dark:text-gray-200"
-                  placeholderText="jj/mm/aaaa"
-                />
-              )}
-            />
-            {errors.exp_date && (
-              <p className="text-red-600 text-sm">{errors.exp_date.message}</p>
+      {/* Dates: Expiry + Received */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex-1">
+          <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+            Date de réception
+          </label>
+          <Controller
+            name="received_date"
+            control={control}
+            rules={{ required: "Date requise" }}
+            render={({ field }) => (
+              <DatePicker
+                selected={field.value}
+                onChange={field.onChange}
+                dateFormat="dd/MM/yyyy"
+                className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+              />
             )}
-          </div>
+          />
+          {errors.received_date && (
+            <p className="text-sm text-red-600 mt-1">{errors.received_date.message}</p>
+          )}
         </div>
 
-      {/* Submit Button */}
-      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">
+            Date d'expiration
+          </label>
+          <Controller
+            name="exp_date"
+            control={control}
+            rules={{ required: "Date requise" }}
+            render={({ field }) => (
+              <DatePicker
+                selected={field.value}
+                onChange={field.onChange}
+                dateFormat="dd/MM/yyyy"
+                className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+              />
+            )}
+          />
+          {errors.exp_date && (
+            <p className="text-sm text-red-600 mt-1">{errors.exp_date.message}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Submit button */}
+      <div className="flex justify-end">
         <button
           type="submit"
           disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-60 text-sm dark:bg-blue-500 dark:hover:bg-blue-600"
+          className="px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-md disabled:opacity-60 dark:bg-blue-500 dark:hover:bg-blue-600"
         >
           {loading ? (
             <span className="flex items-center gap-2">
@@ -200,13 +208,21 @@ const MedicineReceiptForm: React.FC = () => {
               Enregistrement...
             </span>
           ) : (
-            'Enregistrer'
+            "Enregistrer"
           )}
         </button>
       </div>
 
-      {/* Message */}
-      {message && <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">{message}</p>}
+      {/* Result message */}
+      {message && (
+        <p
+          className={`text-sm mt-2 ${
+            message.startsWith("✅") ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {message}
+        </p>
+      )}
     </form>
   );
 };
