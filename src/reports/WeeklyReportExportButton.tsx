@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import API from "../../services/api";
+import API from "@/services/api";
 
 export default function WeeklyReportExportButton() {
   const [startDate, setStartDate] = useState<string>("");
