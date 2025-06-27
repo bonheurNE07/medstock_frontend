@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
   Title,
-  PointElement
+  PointElement,
 } from "chart.js";
 import { Receipt } from "../stock/ReceiptTable";
 
@@ -26,7 +26,7 @@ ChartJS.register(
 
 interface Props {
   receipts: Receipt[];
-  title: String;
+  title: string;
 }
 
 type ChartGroupBy = "medicine" | "date";
@@ -62,8 +62,8 @@ const ReceiptChart = ({ receipts, title }: Props) => {
       datasets: [
         {
           label: groupBy === "medicine"
-          ? "Quantité totale par médicament"
-          : "Quantité totale par date",
+            ? "Quantité totale par médicament"
+            : "Quantité totale par date",
           data: values,
           backgroundColor: colors,
           borderColor: colors,
@@ -124,7 +124,7 @@ const ReceiptChart = ({ receipts, title }: Props) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 dark:text-white shadow rounded-lg p-4 mt-6">
+    <div className="bg-white dark:bg-[#181818] dark:text-white shadow rounded-lg p-4 mt-6">
       <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
         <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">{title}</h2>
         <div className="flex space-x-2">
