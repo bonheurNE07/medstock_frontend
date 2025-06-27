@@ -1,5 +1,5 @@
 import React from "react";
-import { Receipt } from "../../types/models";
+import { Receipt } from "@/types/models";
 import {
   Table,
   TableBody,
