@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from "@/components/ui/card"; // ShadCN UI components
+} from "@/components/ui/card";
 
 interface StatCardsProps {
   totalReceived: number;
@@ -56,12 +56,14 @@ const StatCards: React.FC<StatCardsProps> = ({
         {stats.map((stat, index) => (
           <Card
             key={index}
-            className={`transition-all transform hover:scale-[1.02] ${stat.bg} ${stat.text}`}
+            className={`min-h-[110px] ${stat.bg} ${stat.text} rounded-xl transition-transform hover:scale-[1.02] shadow-sm`}
           >
-            <CardHeader>
+            <CardHeader className="pb-1">
               <CardTitle className="text-2xl font-bold">{stat.value}</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm font-medium">{stat.label}</CardContent>
+            <CardContent className="text-sm font-medium text-muted-foreground dark:text-gray-300">
+              {stat.label}
+            </CardContent>
           </Card>
         ))}
       </div>
