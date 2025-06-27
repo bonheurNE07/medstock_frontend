@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { uploadWeeklyReportExcel } from '../../services/reportService';
+import { uploadWeeklyReportExcel } from '@/services/reportService';
 
 const WeeklyReportExcelUpload: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
