@@ -56,12 +56,14 @@ const StatCards: React.FC<StatCardsProps> = ({
         {stats.map((stat, index) => (
           <Card
             key={index}
-            className={`min-h-[110px] ${stat.bg} ${stat.text} rounded-xl transition-transform hover:scale-[1.02] shadow-sm`}
+            className={`min-h-[110px] ${stat.bg} ${stat.text} rounded-xl transition-transform hover:scale-[1.02] shadow-md`}
           >
-            <CardHeader className="pb-1">
-              <CardTitle className="text-2xl font-bold">{stat.value}</CardTitle>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-2xl font-bold leading-tight">
+                {stat.value}
+              </CardTitle>
             </CardHeader>
-            <CardContent className="text-sm font-medium text-muted-foreground dark:text-gray-300">
+            <CardContent className="text-sm font-medium dark:text-gray-300">
               {stat.label}
             </CardContent>
           </Card>
@@ -69,7 +71,7 @@ const StatCards: React.FC<StatCardsProps> = ({
       </div>
 
       {lastReceiptDate && (
-        <p className="text-center text-sm text-gray-700 dark:text-gray-300">
+        <p className="text-center text-sm text-gray-600 dark:text-gray-300">
           Dernière réception :{" "}
           <strong>{new Date(lastReceiptDate).toLocaleDateString()}</strong>
         </p>
