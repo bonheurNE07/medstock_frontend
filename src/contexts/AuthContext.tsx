@@ -1,6 +1,5 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import { loginWithEmail } from '../services/auth';
-import { saveTokens, clearTokens, getAccessToken } from '../utils/storage';
+import { createContext, useContext, useEffect, useState } from "react";
+import { loginWithEmail, refreshToken } from "@/services/auth";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -10,19 +9,30 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!getAccessToken());
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return !!localStorage.getItem("access_token");
+  });
 
   const login = async (email: string, password: string) => {
     const { access, refresh } = await loginWithEmail(email, password);
-    saveTokens(access, refresh);
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    clearTokens();
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     setIsAuthenticated(false);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("refresh_token");
+    if (token) {
+      refreshToken(token);
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
@@ -32,10 +42,7 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
+  return ctx;
 };
-

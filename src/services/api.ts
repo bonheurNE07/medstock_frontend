@@ -1,55 +1,52 @@
 import axios from "axios";
-import { Stock, Receipt, Center } from "../types/models";
+import type { Stock, Receipt, Center } from "../types/models";
 
-// Base configuration
 const API = axios.create({
+  // baseURL: "https://medstock-backend-1-32pj.onrender.com/api",
   baseURL: "https://medstock-backend-1-32pj.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// API endpoints
-const ENDPOINTS = {
-  centers: "/centers/",
-  stocks: "/stocks/",
-  receipts: "/receipts/",
-};
+// Automatically attach access token to every request
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("access_token"); // or sessionStorage if you prefer
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
-// Fetch all centers
 export const fetchCenters = async (): Promise<Center[]> => {
-  const response = await API.get(ENDPOINTS.centers);
-  return response.data;
+  const res = await API.get("/centers/");
+  return res.data;
 };
 
-// Fetch stock by center and medicine name
 export const fetchStock = async (
   centerId?: number,
   search?: string
 ): Promise<Stock[]> => {
-  const params: Record<string, any> = {};
+  const params: any = {};
   if (centerId) params.center = centerId;
   if (search) params["medicine__name__icontains"] = search;
-
-  const response = await API.get(ENDPOINTS.stocks, { params });
-  return response.data;
+  const res = await API.get("/stocks/", { params });
+  return res.data;
 };
 
-// Fetch receipts with filters
 export const fetchReceipts = async (
   centerId?: number,
   startDate?: string,
   endDate?: string,
   search?: string
 ): Promise<Receipt[]> => {
-  const params: Record<string, any> = {};
+  const params: any = {};
   if (centerId) params.center = centerId;
   if (startDate) params["received_date__gte"] = startDate;
   if (endDate) params["received_date__lte"] = endDate;
   if (search) params["medicine__name__icontains"] = search;
-
-  const response = await API.get(ENDPOINTS.receipts, { params });
-  return response.data;
+  const res = await API.get("/receipts/", { params });
+  return res.data;
 };
 
 export default API;

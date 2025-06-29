@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { fetchCenters, fetchMedicines } from '../../services/stockService';
 import { createWeeklyReport } from '../../services/reportService';
-import { Center, Medicine } from '../../types';
+import type { Center, Medicine } from '../../types';
 
 interface FormData {
   center: string;
@@ -59,7 +59,7 @@ const WeeklyReportForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full bg-white dark:bg-[#181818] rounded-2xl shadow-md border border-gray-200 dark:border-gray-700 p-6 space-y-6"
+      className="w-full bg-white dark:bg-[#181818] shadow-md space-y-6"
     >
       <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
         Formulaire de rapport hebdomadaire
@@ -72,7 +72,7 @@ const WeeklyReportForm: React.FC = () => {
         </label>
         <select
           {...register('center', { required: 'Centre requis' })}
-          className="w-full border rounded-lg px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          className="w-full border rounded-lg px-3 py-2 text-sm bg-gray-50 dark:bg-[#191919] dark:text-white dark:border-gray-600"
         >
           <option value="">-- Choisir un centre --</option>
           {centers.map((center) => (
@@ -93,7 +93,7 @@ const WeeklyReportForm: React.FC = () => {
         </label>
         <select
           {...register('medicine', { required: 'Médicament requis' })}
-          className="w-full border rounded-lg px-3 py-2 text-sm bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          className="w-full border rounded-lg px-3 py-2 text-sm bg-gray-50 dark:bg-[#191919] dark:text-white dark:border-gray-600"
         >
           <option value="">-- Choisir un médicament --</option>
           {medicines.map((med) => (
@@ -116,7 +116,7 @@ const WeeklyReportForm: React.FC = () => {
           <input
             type="date"
             {...register('week_start', { required: 'Date de début requise' })}
-            className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-[#191919] dark:text-white dark:border-gray-600"
           />
           {errors.week_start && (
             <p className="text-red-600 text-sm mt-1">{errors.week_start.message}</p>
@@ -130,7 +130,7 @@ const WeeklyReportForm: React.FC = () => {
           <input
             type="date"
             {...register('week_end', { required: 'Date de fin requise' })}
-            className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-[#191919] dark:text-white dark:border-gray-600"
           />
           {errors.week_end && (
             <p className="text-red-600 text-sm mt-1">{errors.week_end.message}</p>
@@ -148,9 +148,9 @@ const WeeklyReportForm: React.FC = () => {
           min={1}
           {...register('quantity_used', {
             required: 'Quantité requise',
-            min: { value: 1, message: 'Minimum: 1' },
+            min: { value: 1, message: 'Minimum: 1'},
           })}
-          className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          className="w-full border rounded-lg px-3 py-2 text-sm dark:bg-[#191919] dark:text-white dark:border-gray-600"
         />
         {errors.quantity_used && (
           <p className="text-red-600 text-sm mt-1">

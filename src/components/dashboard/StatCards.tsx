@@ -52,26 +52,28 @@ const StatCards: React.FC<StatCardsProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Responsive Grid Layout */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <Card
             key={index}
-            className={`min-h-[110px] ${stat.bg} ${stat.text} rounded-xl transition-transform hover:scale-[1.02] shadow-md`}
+            className={`min-h-[110px] sm:min-h-[120px] lg:min-h-[130px] ${stat.bg} ${stat.text} rounded-xl transition-transform hover:scale-[1.02] shadow-md`}
           >
             <CardHeader className="pb-2">
-              <CardTitle className="text-2xl font-bold leading-tight">
+              <CardTitle className="text-lg sm:text-xl font-bold leading-tight">
                 {stat.value}
               </CardTitle>
             </CardHeader>
-            <CardContent className="text-sm font-medium dark:text-gray-300">
+            <CardContent className="text-xs sm:text-sm font-medium dark:text-gray-300">
               {stat.label}
             </CardContent>
           </Card>
         ))}
       </div>
 
+      {/* Display Last Receipt Date */}
       {lastReceiptDate && (
-        <p className="text-center text-sm text-gray-600 dark:text-gray-300">
+        <p className="text-center text-xs sm:text-sm text-gray-600 dark:text-gray-300">
           Dernière réception :{" "}
           <strong>{new Date(lastReceiptDate).toLocaleDateString()}</strong>
         </p>

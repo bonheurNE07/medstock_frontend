@@ -9,10 +9,12 @@ export default function Layout() {
       <Navbar />
 
       <main
-        className="flex-1 px-4 py-6 sm:px-6 md:px-8 lg:px-12 bg-[#181818] rounded-t-2xl"
+        className="flex-1 px-4 py-6 sm:px-6 md:px-8 lg:px-12 bg-gray-50 dark:bg-[#181818] rounded-t-2xl"
         aria-label="Main content"
       >
-        <Outlet />
+        <div className="max-w-screen-xl mx-auto">
+          <Outlet />
+        </div>
       </main>
 
       <Footer />

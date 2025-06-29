@@ -1,0 +1,21 @@
+{
+  "name": "MedStock",
+  "short_name": "MedStock",
+  "description": "A medical stock management app",
+  "theme_color": "#4CAF50",
+  "background_color": "#ffffff",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -38,9 +38,6 @@ const ReceiptExcelUpload: React.FC = () => {
 
   return (
     <div className="w-full bg-white dark:bg-[#181818] rounded-xl p-5 shadow-md">
-      <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
-        📥 Importer un fichier Excel
-      </h2>
 
       {/* File Drop/Click Area */}
       <label

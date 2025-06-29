@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Loading from "../components/Loading";
+import Loading from "../pages/Loading";
 import Layout from "../layouts/Layout";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
@@ -10,7 +10,7 @@ import StockOverviewPage from "../pages/StockOverviewPage";
 import StockInsertionPage from "../pages/StockInsertionPage";
 import ReportInsertionPage from "../pages/ReportInsertionPage";
 import SettingsPage from "../pages/SettingsPage";
-import PrivateRoute from "../routers/PrivateRoute";
+import PrivateRoute from "./PrivateRoute";
 
 
 export default function AppRoutes() {

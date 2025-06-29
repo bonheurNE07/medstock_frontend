@@ -1,5 +1,5 @@
 import React from "react";
-import { Receipt } from "@/types/models";
+import type { Receipt } from "@/types/models";
 import {
   Table,
   TableBody,
@@ -13,7 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const RecentReceiptsTable: React.FC<{ receipts: Receipt[] }> = ({ receipts }) => {
   return (
-    <Card className="bg-white dark:bg-[#181818] border dark:border-gray-700">
+    <Card className="bg-white dark:bg-[#181818] border dark:border-gray-700 rounded-lg shadow-md mt-6">
       <CardContent className="p-4">
         <h3 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-100">
           Réceptions Récentes
@@ -22,12 +22,12 @@ const RecentReceiptsTable: React.FC<{ receipts: Receipt[] }> = ({ receipts }) =>
           <Table className="min-w-[640px] text-sm">
             <TableHeader>
               <TableRow className="bg-gray-100 dark:bg-gray-700">
-                <TableHead>Centre</TableHead>
-                <TableHead>Médicament</TableHead>
-                <TableHead>Unité</TableHead>
-                <TableHead>Quantité</TableHead>
-                <TableHead>Date de Péremption</TableHead>
-                <TableHead>Date de Réception</TableHead>
+                <TableHead className="text-left">Centre</TableHead>
+                <TableHead className="text-left">Médicament</TableHead>
+                <TableHead className="text-left">Unité</TableHead>
+                <TableHead className="text-left">Quantité</TableHead>
+                <TableHead className="text-left">Date de Péremption</TableHead>
+                <TableHead className="text-left">Date de Réception</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

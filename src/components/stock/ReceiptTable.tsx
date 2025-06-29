@@ -1,4 +1,5 @@
-import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export interface Receipt {
   id: number;
@@ -18,63 +19,59 @@ interface Props {
 
 const ReceiptTable = ({ receipts }: Props) => {
   return (
-    <div className="bg-white dark:bg-gray-800 dark:text-white shadow rounded-lg overflow-x-auto mt-8">
-      <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200 px-4 pt-4">
-        Médicaments reçu
-      </h2>
-      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-2">
-        <thead className="bg-gray-100 dark:bg-gray-700">
-          <tr>
-            <th className="text-left px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-              Centre
-            </th>
-            <th className="text-left px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-              Médicament
-            </th>
-            <th className="text-left px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-              Quantité reçue
-            </th>
-            <th className="text-left px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-              Date de péremption
-            </th>
-            <th className="text-left px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-              Date de reception
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-          {receipts.map((item) => (
-            <tr key={item.id} className="hover:bg-gray-100 dark:hover:bg-gray-600">
-              <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                {item.center_name.toLowerCase()}
-              </td>
-              <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                {item.medicine_name.toLowerCase()}
-              </td>
-              <td className="px-4 py-2 whitespace-nowrap text-sm font-semibold text-blue-600 dark:text-blue-400">
-                {item.quantity_received}
-              </td>
-              <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                {item.exp_date}
-              </td>
-              <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                {item.received_date}
-              </td>
-            </tr>
-          ))}
-          {receipts.length === 0 && (
-            <tr>
-              <td
-                colSpan={5}
-                className="px-4 py-4 text-center text-sm text-gray-400 dark:text-gray-500"
-              >
-                No receipts found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+    <Card className="dark:bg-[#181818] mt-8">
+      <CardContent className="p-4">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
+          Médicaments reçus
+        </h2>
+
+        <ScrollArea className="max-h-[450px] overflow-x-auto">
+          <table className="min-w-full text-sm text-left border-collapse">
+            <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-[#212121]">
+              <tr>
+                <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Centre</th>
+                <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Médicament</th>
+                <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Quantité</th>
+                <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Péremption</th>
+                <th className="px-4 py-3 font-semibold text-gray-700 dark:text-gray-300">Réception</th>
+              </tr>
+            </thead>
+            <tbody className="dark:bg-[#181818] bg-white">
+              {receipts.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center text-gray-500 py-6">
+                    Aucun reçu trouvé.
+                  </td>
+                </tr>
+              ) : (
+                receipts.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="border-t border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-[#2a2a2a]"
+                  >
+                    <td className="px-4 py-2 text-gray-800 dark:text-white whitespace-nowrap">
+                      {item.center_name}
+                    </td>
+                    <td className="px-4 py-2 text-gray-800 dark:text-white whitespace-nowrap">
+                      {item.medicine_name}
+                    </td>
+                    <td className="px-4 py-2 font-semibold text-blue-600 dark:text-blue-400 whitespace-nowrap">
+                      {item.quantity_received}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                      {item.exp_date}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600 dark:text-gray-400 whitespace-nowrap">
+                      {item.received_date}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </ScrollArea>
+      </CardContent>
+    </Card>
   );
 };
 

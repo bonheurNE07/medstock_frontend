@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { createMedicineReceipt } from "@/services/medicineReceiptService";
 import { fetchCenters, fetchMedicines } from "@/services/stockService";
-import { Center, Medicine } from "../../types";
+import type { Center, Medicine } from "../../types";
 
 interface FormData {
   center: string;
@@ -25,7 +25,6 @@ const MedicineReceiptForm: React.FC = () => {
     register,
     handleSubmit,
     resetField,
-    setValue,
     control,
     formState: { errors },
   } = useForm<FormData>({
@@ -64,7 +63,7 @@ const MedicineReceiptForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full bg-white dark:bg-[#181818] rounded-xl shadow p-4 sm:p-6 space-y-6"
+      className="w-full bg-white dark:bg-[#191919] rounded-xl shadow p-4 sm:p-6 space-y-6"
     >
       <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
         ➕ Ajouter une entrée de stock
@@ -77,7 +76,7 @@ const MedicineReceiptForm: React.FC = () => {
         </label>
         <select
           {...register("center", { required: "Centre requis" })}
-          className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+          className="w-full border rounded p-2 text-sm dark:bg-[#191919] dark:border-gray-600 dark:text-gray-200"
         >
           <option value="">-- Choisir un centre --</option>
           {centers.map((center) => (
@@ -98,7 +97,7 @@ const MedicineReceiptForm: React.FC = () => {
         </label>
         <select
           {...register("medicine", { required: "Médicament requis" })}
-          className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+          className="w-full border rounded p-2 text-sm dark:bg-[#191919] dark:border-gray-600 dark:text-gray-200"
         >
           <option value="">-- Choisir un médicament --</option>
           {medicines.map((med) => (
@@ -124,7 +123,7 @@ const MedicineReceiptForm: React.FC = () => {
             required: "Quantité requise",
             min: { value: 1, message: "Quantité minimale : 1" },
           })}
-          className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+          className="w-full border rounded p-2 text-sm dark:bg-[#191919] dark:border-gray-600 dark:text-gray-200"
         />
         {errors.quantity_received && (
           <p className="text-sm text-red-600 mt-1">
@@ -148,7 +147,7 @@ const MedicineReceiptForm: React.FC = () => {
                 selected={field.value}
                 onChange={field.onChange}
                 dateFormat="dd/MM/yyyy"
-                className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                className="w-full border rounded p-2 text-sm dark:bg-[#191919] dark:border-gray-600 dark:text-gray-200"
               />
             )}
           />
@@ -170,7 +169,7 @@ const MedicineReceiptForm: React.FC = () => {
                 selected={field.value}
                 onChange={field.onChange}
                 dateFormat="dd/MM/yyyy"
-                className="w-full border rounded p-2 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                className="w-full border rounded p-2 text-sm dark:bg-[#191919] dark:border-gray-600 dark:text-gray-200"
               />
             )}
           />

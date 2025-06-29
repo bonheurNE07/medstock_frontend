@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -6,13 +6,14 @@ import {
   LinearScale,
   BarElement,
   LineElement,
+  PointElement,
   Tooltip,
   Legend,
   Title,
-  PointElement,
 } from "chart.js";
-import { Stock } from "../../types/models";
+import type { Stock } from "../../types/models";
 import { format } from "date-fns";
+import { Card, CardContent } from "@/components/ui/card";
 
 ChartJS.register(
   CategoryScale,
@@ -30,7 +31,6 @@ interface Props {
   title: string;
 }
 
-type ChartGroupBy = "medicine" | "date";
 
 const generateColors = (count: number) => {
   const palette = [
@@ -41,40 +41,20 @@ const generateColors = (count: number) => {
 };
 
 const StockChart: React.FC<Props> = ({ stocks, title }) => {
-  const [chartType, setChartType] = useState<"bar" | "line">("bar");
-  const [groupBy, setGroupBy] = useState<ChartGroupBy>("medicine");
-
-  const chartData = useMemo(() => {
+  const chartByMedicine = useMemo(() => {
     const map: Record<string, number> = {};
-
     stocks.forEach((stock) => {
-      const key =
-        groupBy === "medicine"
-          ? stock.medicine_name || "Inconnu"
-          : format(new Date(stock.last_updated), "dd/MM/yyyy");
-
+      const key = stock.medicine_name || "Inconnu";
       map[key] = (map[key] || 0) + stock.total_quantity;
     });
-
-    const labels = Object.keys(map).sort((a, b) =>
-      groupBy === "date"
-        ? new Date(a).getTime() - new Date(b).getTime()
-        : a.localeCompare(b)
-    );
-
+    const labels = Object.keys(map).sort();
     const values = labels.map((label) => map[label]);
     const colors = generateColors(labels.length);
-
-    console.log("Stock items: ", stocks.slice(0, 5));
-
     return {
       labels,
       datasets: [
         {
-          label:
-            groupBy === "medicine"
-              ? "Quantité totale par médicament"
-              : "Quantité totale par date",
+          label: "Quantité totale par médicament",
           data: values,
           backgroundColor: colors,
           borderColor: colors,
@@ -82,20 +62,43 @@ const StockChart: React.FC<Props> = ({ stocks, title }) => {
         },
       ],
     };
-  }, [stocks, groupBy]);
+  }, [stocks]);
+
+  const chartByDate = useMemo(() => {
+    const map: Record<string, number> = {};
+    stocks.forEach((stock) => {
+      const key = format(new Date(stock.last_updated), "dd/MM/yyyy");
+      map[key] = (map[key] || 0) + stock.total_quantity;
+    });
+    const labels = Object.keys(map).sort(
+      (a, b) => new Date(a).getTime() - new Date(b).getTime()
+    );
+    const values = labels.map((label) => map[label]);
+    const colors = generateColors(labels.length);
+    return {
+      labels,
+      datasets: [
+        {
+          label: "Quantité totale par date",
+          data: values,
+          backgroundColor: colors,
+          borderColor: colors,
+          borderWidth: 1,
+        },
+      ],
+    };
+  }, [stocks]);
 
   const chartOptions = {
     responsive: true,
     plugins: {
       legend: {
         position: "top" as const,
-        labels: {
-          font: { size: 10 },
-        },
+        labels: { font: { size: 10 } },
       },
       title: {
         display: true,
-        text: `📈 Regroupé par ${groupBy === "medicine" ? "médicament" : "date"}`,
+        text: "",
         font: { size: 12 },
       },
       tooltip: {
@@ -116,54 +119,20 @@ const StockChart: React.FC<Props> = ({ stocks, title }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 dark:text-white shadow rounded-lg p-4 mt-6">
-      <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
-        <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">{title}</h2>
+    <div className="overflow-x-auto space-x-4 flex snap-x snap-mandatory mt-6 pb-4">
+      <Card className="min-w-[320px] snap-start shrink-0 dark:bg-[#181818]">
+        <CardContent className="p-4 space-y-4">
+          <h2 className="text-lg font-semibold">{title} par médicament</h2>
+          <Bar data={chartByMedicine} options={{ ...chartOptions, plugins: { ...chartOptions.plugins, title: { display: true, text: "📊 Par médicament" } } }} />
+        </CardContent>
+      </Card>
 
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setGroupBy("medicine")}
-            className={`px-3 py-1 rounded ${groupBy === "medicine"
-              ? "bg-green-600 text-white"
-              : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-white"}`}
-          >
-            Regrouper par médicament
-          </button>
-          <button
-            onClick={() => setGroupBy("date")}
-            className={`px-3 py-1 rounded ${groupBy === "date"
-              ? "bg-green-600 text-white"
-              : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-white"}`}
-          >
-            Regrouper par date
-          </button>
-        </div>
-
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setChartType("bar")}
-            className={`px-3 py-1 rounded ${chartType === "bar"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-white"}`}
-          >
-            Bar
-          </button>
-          <button
-            onClick={() => setChartType("line")}
-            className={`px-3 py-1 rounded ${chartType === "line"
-              ? "bg-blue-500 text-white"
-              : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-white"}`}
-          >
-            Line
-          </button>
-        </div>
-      </div>
-
-      {chartType === "bar" ? (
-        <Bar data={chartData} options={chartOptions} />
-      ) : (
-        <Line data={chartData} options={chartOptions} />
-      )}
+      <Card className="min-w-[320px] snap-start shrink-0 dark:bg-[#181818]">
+        <CardContent className="p-4 space-y-4">
+          <h2 className="text-lg font-semibold">{title} par date</h2>
+          <Line data={chartByDate} options={{ ...chartOptions, plugins: { ...chartOptions.plugins, title: { display: true, text: "📈 Par date" } } }} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

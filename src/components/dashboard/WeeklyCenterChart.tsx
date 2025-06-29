@@ -31,7 +31,6 @@ const WeeklyCenterChart: React.FC<WeeklyCenterChartProps> = ({ centerName, data 
   useEffect(() => {
     const match = window.matchMedia("(prefers-color-scheme: dark)");
     setIsDarkMode(match.matches);
-
     const handler = (e: MediaQueryListEvent) => setIsDarkMode(e.matches);
     match.addEventListener("change", handler);
     return () => match.removeEventListener("change", handler);
@@ -66,42 +65,34 @@ const WeeklyCenterChart: React.FC<WeeklyCenterChartProps> = ({ centerName, data 
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: true,
         position: "bottom" as const,
         labels: {
-          boxWidth: 10,
-          font: { size: 10 },
+          boxWidth: 12,
           color: tickColor,
+          font: { size: 11 },
         },
       },
+      title: {
+        display: false,
+      },
       tooltip: {
+        bodyFont: { size: 11 },
+        titleFont: { size: 12 },
         callbacks: {
-          label: (ctx: any) => {
-            const value = ctx.raw;
-            const label = ctx.dataset.label;
-            return `${label}: ${value}`;
-          },
+          label: (ctx: any) => `${ctx.dataset.label}: ${ctx.raw}`,
         },
       },
     },
     layout: {
-      padding: { top: 5, bottom: 5 },
+      padding: { top: 10, bottom: 5 },
     },
     scales: {
       x: {
         ticks: {
+          color: tickColor,
           autoSkip: true,
           maxTicksLimit: 15,
-          maxRotation: 0,
-          minRotation: 0,
-          color: tickColor,
-          font: (ctx: any) => {
-            const count = ctx.chart.data.labels?.length || 1;
-            if (count < 6) return { size: 14 };
-            if (count < 10) return { size: 12 };
-            if (count < 20) return { size: 10 };
-            return { size: 8 };
-          },
+          font: { size: 10 },
         },
         grid: {
           drawOnChartArea: false,
@@ -111,7 +102,7 @@ const WeeklyCenterChart: React.FC<WeeklyCenterChartProps> = ({ centerName, data 
         beginAtZero: true,
         ticks: {
           color: tickColor,
-          font: { size: 12 },
+          font: { size: 11 },
         },
         grid: {
           color: gridColor,
@@ -121,13 +112,10 @@ const WeeklyCenterChart: React.FC<WeeklyCenterChartProps> = ({ centerName, data 
   };
 
   return (
-    <div className="bg-white dark:bg-[#181818] rounded-xl shadow p-4">
-      <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100 whitespace-nowrap">
-        {`Consommation Hebdo – ${centerName}`}
-      </h3>
-
-      <div className="w-full overflow-x-auto">
-        <div className="min-w-[600px] sm:min-w-[700px] md:min-w-[900px] lg:min-w-[1100px] h-[240px] md:h-[300px]">
+    <div className="bg-white dark:bg-[#181818] text-gray-800 dark:text-gray-100 rounded-xl shadow p-4 mt-6">
+      <h3 className="text-lg font-semibold mb-2">{`📊 Consommation hebdo – ${centerName}`}</h3>
+      <div className="overflow-x-auto">
+        <div className="min-w-[600px] md:min-w-[800px] lg:min-w-[1000px] h-[260px] sm:h-[300px]">
           <Line data={{ labels: periods, datasets }} options={options} />
         </div>
       </div>

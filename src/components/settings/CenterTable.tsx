@@ -1,5 +1,3 @@
-import React from "react";
-
 interface Props {
   centers: { id: number; name: string }[];
 }
@@ -16,7 +14,7 @@ export default function CenterTable({ centers }: Props) {
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-[#181818] divide-y divide-gray-200 dark:divide-gray-700">
-            {centers.map((center, index) => (
+            {centers.map((center, ) => (
               <tr
                 key={center.id}
                 className="hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"

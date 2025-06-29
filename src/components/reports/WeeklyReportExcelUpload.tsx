@@ -54,11 +54,11 @@ const WeeklyReportExcelUpload: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#181818] dark:text-white rounded-xl shadow-sm border p-4 sm:p-6 md:p-8 space-y-6">
+    <div className="w-full bg-white dark:bg-[#181818] dark:text-white shadow-sm sm:p-6 md:p-8 space-y-6">
       <div className="flex items-center justify-center w-full">
         <label
           htmlFor="weekly-report-upload"
-          className="flex flex-col items-center justify-center w-full h-56 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition"
+          className="flex flex-col items-center justify-center w-full h-56 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:bg-[#191919] dark:hover:bg-gray-600 transition"
         >
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
             <svg

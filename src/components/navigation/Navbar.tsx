@@ -15,7 +15,7 @@ const Navbar = () => {
   }, [open]);
 
   return (
-    <nav className="fixed top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white/30 dark:bg-[#202124]/30 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white/30 dark:bg-[#202124]/30 backdrop-blur-md">
       <div className="max-w-screen-xl mx-auto flex justify-between items-center px-4 py-3">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">

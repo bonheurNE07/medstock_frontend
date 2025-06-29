@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import API from "@/services/api";
 
 export default function WeeklyReportExportButton() {
@@ -47,7 +47,7 @@ export default function WeeklyReportExportButton() {
           <h3 className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Date de début</h3>
           <input
             type="date"
-            className="border dark:border-gray-700 rounded p-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
+            className="border dark:border-gray-700 rounded p-2 bg-white dark:bg-[#181818] text-gray-800 dark:text-white"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
           />
@@ -57,7 +57,7 @@ export default function WeeklyReportExportButton() {
           <h3 className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Date de fin</h3>
           <input
             type="date"
-            className="border dark:border-gray-700 rounded p-2 bg-white dark:bg-gray-700 text-gray-800 dark:text-white"
+            className="border dark:border-gray-700 rounded p-2 bg-white dark:bg-[#181818] text-gray-800 dark:text-white"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
           />

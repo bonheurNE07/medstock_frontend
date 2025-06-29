@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -6,12 +6,12 @@ import {
   LinearScale,
   BarElement,
   LineElement,
+  PointElement,
   Tooltip,
   Legend,
   Title,
-  PointElement,
 } from "chart.js";
-import { Receipt } from "../stock/ReceiptTable";
+import type { Receipt } from "../stock/ReceiptTable";
 
 ChartJS.register(
   CategoryScale,
@@ -26,10 +26,7 @@ ChartJS.register(
 
 interface Props {
   receipts: Receipt[];
-  title: string;
 }
-
-type ChartGroupBy = "medicine" | "date";
 
 const generateColors = (count: number) => {
   const palette = [
@@ -39,131 +36,101 @@ const generateColors = (count: number) => {
   return Array.from({ length: count }, (_, i) => palette[i % palette.length]);
 };
 
-const ReceiptChart = ({ receipts, title }: Props) => {
-  const [chartType, setChartType] = useState<"bar" | "line">("bar");
-  const [groupBy, setGroupBy] = useState<ChartGroupBy>("medicine");
+const prepareChartData = (
+  receipts: Receipt[],
+  groupBy: "medicine" | "date"
+) => {
+  const map: Record<string, number> = {};
+  receipts.forEach((r) => {
+    const key = groupBy === "medicine" ? r.medicine_name : r.received_date;
+    map[key] = (map[key] || 0) + r.quantity_received;
+  });
+  const labels = Object.keys(map).sort();
+  const values = labels.map((label) => map[label]);
+  const colors = generateColors(labels.length);
 
-  const chartData = useMemo(() => {
-    const map: Record<string, number> = {};
-
-    receipts.forEach((r) => {
-      const key = groupBy === "medicine"
-        ? r.medicine_name || "Unknown"
-        : r.received_date || "Unknown";
-      map[key] = (map[key] || 0) + r.quantity_received;
-    });
-
-    const labels = Object.keys(map).sort(); // sort by name or date
-    const values = labels.map((label) => map[label]);
-    const colors = generateColors(labels.length);
-
-    return {
-      labels,
-      datasets: [
-        {
-          label: groupBy === "medicine"
+  return {
+    labels,
+    datasets: [
+      {
+        label:
+          groupBy === "medicine"
             ? "Quantité totale par médicament"
             : "Quantité totale par date",
-          data: values,
-          backgroundColor: colors,
-          borderColor: colors,
-          borderWidth: 1,
-        },
-      ],
-    };
-  }, [receipts, groupBy]);
-
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-        labels: {
-          font: {
-            size: 10, // Reduce legend text size
-          },
-        },
+        data: values,
+        backgroundColor: colors,
+        borderColor: colors,
+        borderWidth: 1,
       },
-      title: {
-        display: true,
-        text: `📈 Regroupé par ${groupBy === "medicine" ? "médicament" : "date"}`,
-        font: {
-          size: 12, // title size
-        },
-      },
-      tooltip: {
-        bodyFont: {
-          size: 10, // tooltip font size
-        },
-        titleFont: {
-          size: 11,
-        },
-      },
-    },
-    scales: {
-      x: {
-        ticks: {
-          display: true,
-          font: {
-            size: 10, // x-axis tick labels
-          },
-        },
-        grid: {
-          display: false,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        ticks: {
-          font: {
-            size: 10, // y-axis tick labels
-          },
-        },
-      },
-    },
+    ],
   };
+};
+
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+      labels: { font: { size: 10 } },
+    },
+    title: { display: false },
+    tooltip: {
+      bodyFont: { size: 10 },
+      titleFont: { size: 11 },
+    },
+  },
+  scales: {
+    x: {
+      ticks: { font: { size: 10 } },
+      grid: { display: false },
+    },
+    y: {
+      beginAtZero: true,
+      ticks: { font: { size: 10 } },
+    },
+  },
+};
+
+const ReceiptChartsScrollable = ({ receipts }: Props) => {
+  const byMedicineData = useMemo(
+    () => prepareChartData(receipts, "medicine"),
+    [receipts]
+  );
+  const byDateData = useMemo(
+    () => prepareChartData(receipts, "date"),
+    [receipts]
+  );
 
   return (
-    <div className="bg-white dark:bg-[#181818] dark:text-white shadow rounded-lg p-4 mt-6">
-      <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
-        <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-200">{title}</h2>
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setGroupBy("medicine")}
-            className={`px-3 py-1 rounded ${groupBy === "medicine" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-white"}`}
-          >
-            Regrouper par médicament
-          </button>
-          <button
-            onClick={() => setGroupBy("date")}
-            className={`px-3 py-1 rounded ${groupBy === "date" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-white"}`}
-          >
-            Regrouper par date
-          </button>
+    <div className="mt-6 overflow-x-auto">
+      <div className="flex space-x-4 w-max">
+        <div className="min-w-[300px] max-w-[600px] bg-white dark:bg-[#181818] p-4 rounded-lg shadow">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100 mb-2">
+            Bar — Par Médicament
+          </h3>
+          <Bar data={byMedicineData} options={chartOptions} />
         </div>
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setChartType("bar")}
-            className={`px-3 py-1 rounded ${chartType === "bar" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-white"}`}
-          >
-            Bar
-          </button>
-          <button
-            onClick={() => setChartType("line")}
-            className={`px-3 py-1 rounded ${chartType === "line" ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-white"}`}
-          >
-            Line
-          </button>
+        <div className="min-w-[300px] max-w-[600px] bg-white dark:bg-[#181818] p-4 rounded-lg shadow">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100 mb-2">
+            Bar — Par Date
+          </h3>
+          <Bar data={byDateData} options={chartOptions} />
+        </div>
+        <div className="min-w-[300px] max-w-[600px] bg-white dark:bg-[#181818] p-4 rounded-lg shadow">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100 mb-2">
+            Line — Par Médicament
+          </h3>
+          <Line data={byMedicineData} options={chartOptions} />
+        </div>
+        <div className="min-w-[300px] max-w-[600px] bg-white dark:bg-[#181818] p-4 rounded-lg shadow">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100 mb-2">
+            Line — Par Date
+          </h3>
+          <Line data={byDateData} options={chartOptions} />
         </div>
       </div>
-
-      {chartType === "bar" ? (
-        <Bar data={chartData} options={chartOptions} />
-      ) : (
-        <Line data={chartData} options={chartOptions} />
-      )}
     </div>
   );
 };
 
-export default ReceiptChart;
+export default ReceiptChartsScrollable;
