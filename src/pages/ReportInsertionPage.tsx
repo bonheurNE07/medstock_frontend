@@ -1,6 +1,10 @@
-import WeeklyReportForm from "../components/reports/WeeklyReportForm";
-import WeeklyReportExcelUpload from "../components/reports/WeeklyReportExcelUpload";
-import WeeklyReportExportButton from "../components/reports/WeeklyReportExportButton";
+import { lazy, Suspense } from "react";
+import Loading from "./Loading"; // Reuse the loading spinner
+
+// Lazy-load heavy components
+const WeeklyReportForm = lazy(() => import("../components/reports/WeeklyReportForm"));
+const WeeklyReportExcelUpload = lazy(() => import("../components/reports/WeeklyReportExcelUpload"));
+const WeeklyReportExportButton = lazy(() => import("../components/reports/WeeklyReportExportButton"));
 
 export default function ReportInsertionPage() {
   return (
@@ -10,21 +14,27 @@ export default function ReportInsertionPage() {
       </h1>
 
       {/* Manual Form Section */}
-      <section className="dark:bg-[#181818] rounded-2xl border border-gray-300 dark:border-gray-700 shadow-md p-6 sm:p-8 space-y-4">
-        <WeeklyReportForm />
-      </section>
+      <Suspense fallback={<Loading />}>
+        <section className="dark:bg-[#181818] rounded-2xl border border-gray-300 dark:border-gray-700 shadow-md p-6 sm:p-8 space-y-4">
+          <WeeklyReportForm />
+        </section>
+      </Suspense>
 
       {/* Excel Upload Section */}
-      <section className="bg-gray-100 dark:bg-[#181818] rounded-2xl border border-gray-300 dark:border-gray-700 shadow-md p-6 sm:p-8 space-y-4">
-        <h2 className="text-xl font-semibold">Importer un Fichier Excel</h2>
-        <WeeklyReportExcelUpload />
-      </section>
+      <Suspense fallback={<Loading />}>
+        <section className="bg-gray-100 dark:bg-[#181818] rounded-2xl border border-gray-300 dark:border-gray-700 shadow-md p-6 sm:p-8 space-y-4">
+          <h2 className="text-xl font-semibold">Importer un Fichier Excel</h2>
+          <WeeklyReportExcelUpload />
+        </section>
+      </Suspense>
 
-      {/* Export Section dark:bg-[#181818] p-4 rounded-2xl shadow-md border border-gray-700" */}
-      <section className="bg-gray-100 dark:bg-[#181818] rounded-2xl border border-gray-300 dark:border-gray-700 shadow-md p-6 sm:p-8 space-y-4">
-        <h2 className="text-xl font-semibold">Exporter le Rapport Hebdomadaire</h2>
-        <WeeklyReportExportButton />
-      </section>
+      {/* Export Section */}
+      <Suspense fallback={<Loading />}>
+        <section className="bg-gray-100 dark:bg-[#181818] rounded-2xl border border-gray-300 dark:border-gray-700 shadow-md p-6 sm:p-8 space-y-4">
+          <h2 className="text-xl font-semibold">Exporter le Rapport Hebdomadaire</h2>
+          <WeeklyReportExportButton />
+        </section>
+      </Suspense>
     </div>
   );
 }

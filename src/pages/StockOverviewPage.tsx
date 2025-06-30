@@ -1,66 +1,54 @@
-  import { useEffect, useState } from "react";
-  import { useDashboardData } from "../hooks/useDashboardData";
-  import type { Center, Stock } from "../types/models";
-  import { fetchStocks, fetchCenters } from "../services/stockService";
+import { useEffect, useState, lazy, Suspense } from "react";
+import { useDashboardData } from "../hooks/useDashboardData";
+import type { Center, Stock } from "../types/models";
+import { fetchStocks, fetchCenters } from "../services/stockService";
+import Loading from "./Loading";
 
-  import Filters from "../components/stock/Filters";
-  import StockTable from "../components/stock/StockTable";
-  import LowStockAlerts from "../components/dashboard/LowStockAlerts";
-  import StockChart from "../components/stock/StockChart";
-  import Loading from "./Loading";
+// Lazy-loaded components
+const Filters = lazy(() => import("../components/stock/Filters"));
+const StockTable = lazy(() => import("../components/stock/StockTable"));
+const LowStockAlerts = lazy(() => import("../components/dashboard/LowStockAlerts"));
+const StockChart = lazy(() => import("../components/stock/StockChart"));
 
-  const StockOverviewPage = () => {
-    const [stocks, setStocks] = useState<Stock[]>([]);
-    const [centers, setCenters] = useState<Center[]>([]);
-    const [selectedCenter, setSelectedCenter] = useState<number | null>(null);
-    const [medicineSearch, setMedicineSearch] = useState<string>("");
-    const [startDate, setStartDate] = useState<string>("");
-    const [endDate, setEndDate] = useState<string>("");
-    const { data: dashboard, loading } = useDashboardData();
+const StockOverviewPage = () => {
+  const [stocks, setStocks] = useState<Stock[]>([]);
+  const [centers, setCenters] = useState<Center[]>([]);
+  const [selectedCenter, setSelectedCenter] = useState<number | null>(null);
+  const [medicineSearch, setMedicineSearch] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
-    const [stockPage, setStockPage] = useState(1);
-    const [stockNext, setStockNext] = useState<number | null>(null);
-    const [stockPrev, setStockPrev] = useState<number | null>(null);
+  const [stockPage, setStockPage] = useState(1);
+  const [stockNext, setStockNext] = useState<number | null>(null);
+  const [stockPrev, setStockPrev] = useState<number | null>(null);
 
-    
+  const { data: dashboard, loading } = useDashboardData();
 
+  useEffect(() => {
+    fetchCenters().then(setCenters);
+  }, []);
 
-    useEffect(() => {
-      fetchCenters().then(res => setCenters(res));
-    }, []);
+  useEffect(() => {
+    const stockParams: any = { page: stockPage };
+    if (selectedCenter) stockParams.center = selectedCenter;
+    if (medicineSearch) stockParams.medicine_name = medicineSearch;
 
-    useEffect(() => {
-      const stockParams: any = { page: stockPage };
+    fetchStocks(stockParams).then((res) => {
+      setStocks(res.results);
+      setStockNext(res.next ? stockPage + 1 : null);
+      setStockPrev(stockPage > 1 ? stockPage - 1 : null);
+    });
+  }, [selectedCenter, medicineSearch, startDate, endDate, stockPage]);
 
-      if (selectedCenter) {
-        stockParams.center = selectedCenter;
-      }
+  if (loading) return <Loading />;
 
-      if (medicineSearch) {
-        stockParams.medicine_name = medicineSearch;
-      }
+  return (
+    <div className="p-6 space-y-8 dark:text-gray-100">
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+        📦 Vue d'ensemble du stock
+      </h1>
 
-
-      fetchStocks(stockParams).then(res => {
-        setStocks(res.results);
-        setStockNext(res.next ? stockPage + 1 : null);
-        setStockPrev(stockPage > 1 ? stockPage - 1 : null);
-      });
-
-    }, [
-      selectedCenter,
-      medicineSearch,
-      startDate,
-      endDate,
-      stockPage,
-    ]);
-
-    if (loading) return <Loading />;
-
-    return (
-      <div className="p-6 space-y-8 dark:text-gray-100">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">📦 Vue d'ensemble du stock</h1>
-
+      <Suspense fallback={<Loading />}>
         <Filters
           centers={centers}
           selectedCenter={selectedCenter}
@@ -74,6 +62,7 @@
         />
 
         <StockTable stocks={stocks} />
+
         <div className="flex justify-center gap-4">
           <button
             onClick={() => stockPrev && setStockPage(stockPrev)}
@@ -91,14 +80,16 @@
           </button>
         </div>
 
-        {!loading && dashboard?.alerts?.lowStock?.length > 0 && (
+        {dashboard?.alerts?.lowStock?.length > 0 && (
           <LowStockAlerts alerts={dashboard.alerts.lowStock} />
         )}
-        <div className="mt-8">
-          <StockChart title={"📦 Graphique du stock"} stocks={stocks} />
-        </div>
-      </div>
-    );
-  };
 
-  export default StockOverviewPage;
+        <div className="mt-8">
+          <StockChart title="📦 Graphique du stock" stocks={stocks} />
+        </div>
+      </Suspense>
+    </div>
+  );
+};
+
+export default StockOverviewPage;

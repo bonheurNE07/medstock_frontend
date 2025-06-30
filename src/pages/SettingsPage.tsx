@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
-import CenterForm from "../components/settings/CenterForm";
-import MedicineForm from "../components/settings/MedicineForm";
-import CenterTable from "../components/settings/CenterTable";
-import MedicineTable from "../components/settings/MedicineTable";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { fetchCenters, fetchMedicines } from "../services/stockService";
+import Loading from "./Loading";
+
+// Lazy-loaded components
+const CenterForm = lazy(() => import("../components/settings/CenterForm"));
+const MedicineForm = lazy(() => import("../components/settings/MedicineForm"));
+const CenterTable = lazy(() => import("../components/settings/CenterTable"));
+const MedicineTable = lazy(() => import("../components/settings/MedicineTable"));
 
 export default function SettingsPage() {
   const [centers, setCenters] = useState([]);
@@ -25,16 +28,20 @@ export default function SettingsPage() {
         <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">
           Ajouter un Centre Médical
         </h2>
-        <CenterForm onCreated={loadData} />
-        <CenterTable centers={centers} />
+        <Suspense fallback={<Loading />}>
+          <CenterForm onCreated={loadData} />
+          <CenterTable centers={centers} />
+        </Suspense>
       </section>
 
       <section>
         <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">
           Ajouter un Médicament
         </h2>
-        <MedicineForm onCreated={loadData} />
-        <MedicineTable medicines={medicines} />
+        <Suspense fallback={<Loading />}>
+          <MedicineForm onCreated={loadData} />
+          <MedicineTable medicines={medicines} />
+        </Suspense>
       </section>
     </div>
   );

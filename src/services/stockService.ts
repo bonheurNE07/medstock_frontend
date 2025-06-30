@@ -4,21 +4,17 @@ import API from "./api";
 
 export const fetchStocks = async (params?: any) => {
   const res = await API.get("/stocks/", { params });
-  return res.data; // Keep full response to get next/previous
+  return res.data; 
 };
 
 export const fetchCenters = async () => {
   const res = await API.get("/centers/");
-  console.info("centers data");
-  console.log(res.data.results);
   return res.data.results;
 };
 
 
 export const fetchMedicines = async () => {
   const res = await API.get("/medicines/");
-  console.info("medecines data");
-  console.log(res.data);
   return res.data;
 };
 

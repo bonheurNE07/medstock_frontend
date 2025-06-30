@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-
-import MedicineReceiptForm from "../components/receipts/MedicineReceiptForm";
-import ExcelUpload from "../components/receipts/ExcelUpload";
-import ReceiptTable from "../components/stock/ReceiptTable";
-import Filters from "../components/stock/Filters";
-import ReceiptChart from "../components/receipts/ReceiptChart";
-
-import type{ Center } from "../types/models";
-
+import { useEffect, useState, lazy, Suspense } from "react";
 import { fetchReceipts } from "../services/receiptService";
 import { fetchCenters } from "../services/stockService";
+import type { Center } from "../types/models";
+import Loading from "./Loading";
+
+// Lazy-loaded components
+const MedicineReceiptForm = lazy(() => import("../components/receipts/MedicineReceiptForm"));
+const ExcelUpload = lazy(() => import("../components/receipts/ExcelUpload"));
+const ReceiptTable = lazy(() => import("../components/stock/ReceiptTable"));
+const Filters = lazy(() => import("../components/stock/Filters"));
+const ReceiptChart = lazy(() => import("../components/receipts/ReceiptChart"));
 
 export default function StockInsertionPage() {
   const [receipts, setReceipts] = useState([]);
@@ -24,36 +24,22 @@ export default function StockInsertionPage() {
   const [receiptPrev, setReceiptPrev] = useState<number | null>(null);
 
   useEffect(() => {
-      fetchCenters().then(res => setCenters(res));
-    }, []);
-  
+    fetchCenters().then(setCenters);
+  }, []);
+
   useEffect(() => {
     const receiptParams: any = { page: receiptPage };
-
-    if (selectedCenter) {
-      receiptParams.center = selectedCenter;
-    }
-
-    if (medicineSearch) {
-      receiptParams.medicine_name = medicineSearch;
-    }
-
+    if (selectedCenter) receiptParams.center = selectedCenter;
+    if (medicineSearch) receiptParams.medicine_name = medicineSearch;
     if (startDate) receiptParams.start_date = startDate;
     if (endDate) receiptParams.end_date = endDate;
 
-    fetchReceipts(receiptParams).then(res => {
+    fetchReceipts(receiptParams).then((res) => {
       setReceipts(res.results);
       setReceiptNext(res.next ? receiptPage + 1 : null);
       setReceiptPrev(receiptPage > 1 ? receiptPage - 1 : null);
     });
-  }, [
-    selectedCenter,
-    medicineSearch,
-    receiptPage,
-    startDate,
-    endDate,
-  ]);
-  
+  }, [selectedCenter, medicineSearch, receiptPage, startDate, endDate]);
 
   return (
     <div className="p-6 sm:p-8 lg:p-10 space-y-8 max-w-6xl mx-auto dark:bg-[#181818] dark:text-gray-100">
@@ -61,55 +47,55 @@ export default function StockInsertionPage() {
         Ajouter des informations de stock
       </h1>
 
-      {/* Medicine Receipt Form Section */}
-      <section className="space-y-2 dark:bg-[#181818] p-4 rounded-2xl shadow-md border border-gray-700">
-        <MedicineReceiptForm />
-      </section>
+      <Suspense fallback={<Loading />}>
+        <section className="space-y-2 dark:bg-[#181818] p-4 rounded-2xl shadow-md border border-gray-700">
+          <MedicineReceiptForm />
+        </section>
 
-      {/* Excel Upload Section */}
-      <section className="space-y-2 dark:bg-[#181818] p-4 rounded-2xl shadow-md border border-gray-700">
-        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-          Téléverser le fichier Excel des reçus de médicaments
-        </h2>
-        <ExcelUpload />
-      </section>
+        <section className="space-y-2 dark:bg-[#181818] p-4 rounded-2xl shadow-md border border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+            Téléverser le fichier Excel des reçus de médicaments
+          </h2>
+          <ExcelUpload />
+        </section>
 
-      {/* Display Section */}
-      {/* Separator */}
-      <hr className="my-6 border-gray-300 dark:border-gray-600" />
-      
-      <Filters
-        centers={centers}
-        selectedCenter={selectedCenter}
-        onCenterChange={setSelectedCenter}
-        medicineSearch={medicineSearch}
-        onMedicineSearchChange={setMedicineSearch}
-        startDate={startDate}
-        onStartDateChange={setStartDate}
-        endDate={endDate}
-        onEndDateChange={setEndDate}
-      />
+        <hr className="my-6 border-gray-300 dark:border-gray-600" />
 
-      <ReceiptTable receipts={receipts} />
-      <div className="flex justify-center gap-4 mt-4">
-        <button
-          onClick={() => receiptPrev && setReceiptPage(receiptPrev)}
-          disabled={!receiptPrev}
-          className="px-4 py-2 bg-gray-600 rounded text-white disabled:opacity-40"
-        >
-          Previous Receipt
-        </button>
-        <button
-          onClick={() => receiptNext && setReceiptPage(receiptNext)}
-          disabled={!receiptNext}
-          className="px-4 py-2 bg-[#0699A2] rounded text-white disabled:opacity-40"
-        >
-          Next Receipt
-        </button>
-      </div>
-      <div className="mt-8">
-      <ReceiptChart receipts={receipts} />
-      </div>
+        <Filters
+          centers={centers}
+          selectedCenter={selectedCenter}
+          onCenterChange={setSelectedCenter}
+          medicineSearch={medicineSearch}
+          onMedicineSearchChange={setMedicineSearch}
+          startDate={startDate}
+          onStartDateChange={setStartDate}
+          endDate={endDate}
+          onEndDateChange={setEndDate}
+        />
+
+        <ReceiptTable receipts={receipts} />
+
+        <div className="flex justify-center gap-4 mt-4">
+          <button
+            onClick={() => receiptPrev && setReceiptPage(receiptPrev)}
+            disabled={!receiptPrev}
+            className="px-4 py-2 bg-gray-600 rounded text-white disabled:opacity-40"
+          >
+            Previous Receipt
+          </button>
+          <button
+            onClick={() => receiptNext && setReceiptPage(receiptNext)}
+            disabled={!receiptNext}
+            className="px-4 py-2 bg-[#0699A2] rounded text-white disabled:opacity-40"
+          >
+            Next Receipt
+          </button>
+        </div>
+
+        <div className="mt-8">
+          <ReceiptChart receipts={receipts} />
+        </div>
+      </Suspense>
     </div>
   );
 }

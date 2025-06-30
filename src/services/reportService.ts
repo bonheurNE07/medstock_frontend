@@ -3,8 +3,6 @@ import API from "./api";
 // 1. Fetch weekly reports with optional filters (center, medicine, week_start, etc.)
 export const fetchWeeklyReports = async (params?: any) => {
   const res = await API.get("/weekly/reports/", { params });
-  console.info("Weekly reports data");
-  console.log(res.data.results);
   return res.data.results;
 };
 
@@ -17,8 +15,6 @@ export const createWeeklyReport = async (data: {
   quantity_used: number;
 }) => {
   const res = await API.post("weekly/reports/", data);
-  console.info("Created weekly report");
-  console.log(res.data);
   return res.data;
 };
 
