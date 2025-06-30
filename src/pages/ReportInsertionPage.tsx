@@ -8,7 +8,7 @@ const WeeklyReportExportButton = lazy(() => import("../components/reports/Weekly
 
 export default function ReportInsertionPage() {
   return (
-    <div className="p-6 sm:p-8 lg:p-10 space-y-10 max-w-6xl mx-auto bg-white dark:bg-[#181818] text-gray-900 dark:text-gray-100">
+    <div className="p-6 sm:p-8 lg:p-10 space-y-10 max-w-6xl mx-auto bg-transparent dark:bg-[#181818] text-gray-900 dark:text-gray-100">
       <h1 className="text-2xl sm:text-3xl font-bold">
         Ajouter un Rapport Hebdomadaire
       </h1>
