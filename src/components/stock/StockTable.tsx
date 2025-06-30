@@ -1,7 +1,6 @@
 import React from "react";
 import type { Stock } from "../../types/models";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Props {
   stocks: Stock[];
@@ -15,7 +14,7 @@ const StockTable: React.FC<Props> = ({ stocks }) => {
           <h2 className="text-lg font-semibold">📦 Stock actuel par centre</h2>
         </div>
 
-        <ScrollArea className="w-full max-h-[450px] overflow-x-auto">
+        <div className="w-full max-h-[450px] overflow-x-auto">
           <table className="min-w-full text-sm text-left">
             <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-[#212121]">
               <tr>
@@ -50,7 +49,7 @@ const StockTable: React.FC<Props> = ({ stocks }) => {
               )}
             </tbody>
           </table>
-        </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );

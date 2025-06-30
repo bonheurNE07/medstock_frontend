@@ -9,7 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const RecentReceiptsTable: React.FC<{ receipts: Receipt[] }> = ({ receipts }) => {
   return (
@@ -18,7 +17,7 @@ const RecentReceiptsTable: React.FC<{ receipts: Receipt[] }> = ({ receipts }) =>
         <h3 className="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-100">
           Réceptions Récentes
         </h3>
-        <ScrollArea className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto">
           <Table className="min-w-[640px] text-sm">
             <TableHeader>
               <TableRow className="bg-gray-100 dark:bg-gray-700">
@@ -46,7 +45,7 @@ const RecentReceiptsTable: React.FC<{ receipts: Receipt[] }> = ({ receipts }) =>
               ))}
             </TableBody>
           </Table>
-        </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );

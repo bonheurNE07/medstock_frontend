@@ -1,5 +1,4 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export interface Receipt {
   id: number;
@@ -24,8 +23,8 @@ const ReceiptTable = ({ receipts }: Props) => {
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
           Médicaments reçus
         </h2>
-
-        <ScrollArea className="max-h-[450px] overflow-x-auto">
+        
+        <div className="max-h-[450px] overflow-x-auto">
           <table className="min-w-full text-sm text-left border-collapse">
             <thead className="sticky top-0 z-10 bg-gray-100 dark:bg-[#212121]">
               <tr>
@@ -69,7 +68,8 @@ const ReceiptTable = ({ receipts }: Props) => {
               )}
             </tbody>
           </table>
-        </ScrollArea>
+        </div>
+    
       </CardContent>
     </Card>
   );

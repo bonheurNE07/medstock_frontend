@@ -8,7 +8,6 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface StockEntry {
   center_name: string;
@@ -25,7 +24,7 @@ const StockPerCenterTable: React.FC<{ data: StockEntry[] }> = ({ data }) => {
           Stock Disponible par Centre
         </h3>
 
-        <ScrollArea className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto">
           <Table className="min-w-[640px] text-sm">
             <TableHeader>
               <TableRow className="bg-gray-100 dark:bg-gray-700">
@@ -49,7 +48,7 @@ const StockPerCenterTable: React.FC<{ data: StockEntry[] }> = ({ data }) => {
               ))}
             </TableBody>
           </Table>
-        </ScrollArea>
+        </div>
       </CardContent>
     </Card>
   );
