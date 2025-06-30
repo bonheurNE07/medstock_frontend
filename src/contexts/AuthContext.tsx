@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { loginWithEmail, refreshToken } from "@/services/auth";
+import { loginWithEmail } from "@/services/auth";
+import { useNavigate } from "react-router-dom"; 
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -13,6 +14,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return !!localStorage.getItem("access_token");
   });
+
+  const navigate = useNavigate(); 
 
   const login = async (email: string, password: string) => {
     const { access, refresh } = await loginWithEmail(email, password);
@@ -29,10 +32,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("refresh_token");
-    if (token) {
-      refreshToken(token);
+    if (!token) {
+      setIsAuthenticated(false);
+      navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
