@@ -18,25 +18,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate(); 
 
   const login = async (email: string, password: string) => {
-    const { access, refresh } = await loginWithEmail(email, password);
-    localStorage.setItem("access_token", access);
-    localStorage.setItem("refresh_token", refresh);
-    setIsAuthenticated(true);
+    try {
+      const { access, refresh } = await loginWithEmail(email, password);
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
+      setIsAuthenticated(true);
+      navigate("/"); // Redirect to home after login
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Handle the error or show notification
+    }
   };
 
   const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setIsAuthenticated(false);
+    navigate("/login"); // Redirect to login page after logout
   };
 
   useEffect(() => {
     const token = localStorage.getItem("refresh_token");
     if (!token) {
       setIsAuthenticated(false);
-      navigate("/login");
     }
-  }, [navigate]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>

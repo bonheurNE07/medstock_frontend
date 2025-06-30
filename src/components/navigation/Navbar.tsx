@@ -39,9 +39,19 @@ const Navbar = () => {
               stroke="currentColor"
             >
               {open ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               )}
             </svg>
           </button>
@@ -55,41 +65,63 @@ const Navbar = () => {
               : "hidden"
           } md:flex md:static md:w-auto md:space-x-6 items-center px-4 py-4 md:p-0`}
         >
-          {navLinks.map(({ label, path }) => (
-            <NavLink
-              key={path}
-              to={path}
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `block px-3 py-2 rounded-md text-sm font-medium transition ${
-                  isActive
-                    ? "text-white bg-blue-700"
-                    : "text-gray-700 hover:text-blue-700 dark:text-white dark:hover:text-blue-400"
-                }`
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
+          {/* Show private links only if authenticated */}
+          {isAuthenticated &&
+            navLinks.map(({ label, path }) => (
+              <NavLink
+                key={path}
+                to={path}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `block px-3 py-2 rounded-md text-sm font-medium transition ${
+                    isActive
+                      ? "text-white bg-blue-700"
+                      : "text-gray-700 hover:text-blue-700 dark:text-white dark:hover:text-blue-400"
+                  }`
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
 
+          {/* Auth Buttons */}
           {isAuthenticated ? (
             <Button
               variant="destructive"
               size="sm"
               className="ml-2"
-              onClick={logout}
+              onClick={() => {
+                logout();
+                setOpen(false);
+              }}
             >
               Logout
             </Button>
           ) : (
-            <Button
-              variant="default"
-              size="sm"
-              className="ml-2"
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </Button>
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="ml-2"
+                onClick={() => {
+                  navigate("/login");
+                  setOpen(false);
+                }}
+              >
+                Login
+              </Button>
+              <Button
+                variant="default"
+                size="sm"
+                className="ml-2"
+                onClick={() => {
+                  navigate("/register");
+                  setOpen(false);
+                }}
+              >
+                Register
+              </Button>
+            </>
           )}
         </div>
       </div>

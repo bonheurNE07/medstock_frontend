@@ -24,12 +24,7 @@ export default function AppRoutes() {
               <PrivateRoute>
                 <Home />
               </PrivateRoute>
-            }/>
-
-          <Route path="login" element={<Login />}/>
-          <Route path="register" element={<Register />}/>
-          <Route path="confirmation" element={<Confirmation />}/>
-          <Route path="setpassword" element={<SetPassword />}/>
+          }/>
 
           <Route path="/stocks" element={
             <PrivateRoute>
@@ -51,8 +46,13 @@ export default function AppRoutes() {
               <SettingsPage />
             </PrivateRoute>
           } />
-        </Route>
 
+          <Route path="/login" element={<Login />}/>
+          <Route path="/register" element={<Register />}/>
+          <Route path="/confirmation" element={<Confirmation />}/>
+          <Route path="/setpassword" element={<SetPassword />}/>
+        </Route>
+        
         {/* Catch all 404 */}
         <Route path="*" element={<NotFound />} />
       </Routes>

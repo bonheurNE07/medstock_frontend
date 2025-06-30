@@ -59,7 +59,7 @@ const WeeklyReportForm: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full bg-white dark:bg-[#181818] shadow-md space-y-6"
+      className="w-full bg-transparent dark:bg-[#181818] shadow-md space-y-6"
     >
       <h3 className="text-xl font-semibold text-gray-800 dark:text-white">
         Formulaire de rapport hebdomadaire

@@ -2,8 +2,8 @@ import axios from "axios";
 import type { Stock, Receipt, Center } from "../types/models";
 
 const API = axios.create({
-  // baseURL: "https://medstock-backend-1-32pj.onrender.com/api",
   baseURL: "https://medstock-backend-1-32pj.onrender.com/api",
+  // baseURL: "http://127.0.0.1:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,7 +11,7 @@ const API = axios.create({
 
 // Automatically attach access token to every request
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token"); // or sessionStorage if you prefer
+  const token = localStorage.getItem("access_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

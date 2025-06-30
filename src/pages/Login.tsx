@@ -26,13 +26,15 @@ export default function Login() {
   const handleLogin = async(e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      console.log("LOGIN !!!!!!!!!");
+      console.log(email, password);
       await login(email, password);
+      console.log("login done");
       navigate('/');
     } catch (err) {
       setShowErrorNotice(true);
       console.error(err);
     }
-    // navigate("/farmer-regist")
   };
 
 
